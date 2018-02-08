@@ -2,11 +2,30 @@
 // ["1", "21", undefined, "42", "1e+3", Infinity] -> [1, 21, 42, 1000]
 
 
-var arr = ["1", "21", undefined, "42", "1e+3", Infinity];
+function arrStrToArrNum(arr) {
+    var result = [];
+    var counter = 0;
+    for (var i = 0; i < arr.length; i++) {
+        if (typeof arr[i] === "string") {
+            result[counter] = parseFloat(arr[i]);
+            
+            counter++;
+          
+     
+        }
 
-function convert(){
-   
- 
+
+    }
+    return result;
 }
 
-convert(arr)
+
+console.log(arrStrToArrNum(["1", "21", undefined, "42", "1e+3", Infinity]));
+
+
+
+
+
+
+
+
