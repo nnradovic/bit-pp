@@ -16,15 +16,15 @@
     <div class="row">
         <!-- ADD MOVIE -->
         <div class="col-7 offset-1">
-            <form>
+            <form class="was-validated">
                 <div class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" placeholder="Title">
+                    <input type="text" class="form-control is-valid" id="title" placeholder="Title" required >
                     <small class="form-text text-muted">Enter movie title.</small>
                 </div>
                 <div class="form-group">
                     <label for="duration">Duration</label>
-                    <input type="number" class="form-control" id="duration" placeholder="Duration">
+                    <input type="number" class="form-control" id="duration" placeholder="Duration"  required>
                 </div>
                 <div class="form-group">
                     <select id="genre" class="form-control">
@@ -52,7 +52,7 @@
             <form>
                 <div class="form-group">
                     <label for="program">Add Program</label>
-                    <input type="date" class="form-control" id="program" placeholder="Title">
+                    <input type="date" class="form-control is-valid" id="program" placeholder="Title" required >
                     <small class="form-text text-muted">Enter start date.</small>
                 </div>
                 <button type="button" class="btncreateprogram btn btn-primary form-control">Create Program</button>
@@ -71,6 +71,7 @@
             <button type="button" id="addmovietoprogram" class="btn btn-primary form-control">Add Movie</button>
         </div>
             <program class="col-3">
+                    List of programs:
                 <ol id="programlist" class="list-group">
                 </ol>
             </program>
