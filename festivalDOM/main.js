@@ -28,33 +28,39 @@ function createMovie() {
 var dropMovie;
 //Slusamo i na dugme kreiramo movie
 addMovie.addEventListener('click', function (e) {
+    //Ako imamo dva filma prekini kod
     doubleCheck()
+    //Ako je ovo true prekini kod
     if (validation()) {
+ 
         return;
+
+    }else{
+        movie = createMovie()
+
+        //Pravimo list item i selektujemo listu
+        var listItemMovie = document.createElement('li');
+        var orderListMovie = document.getElementById('movielist');
+    
+        //Dodajemo list itmeu text iz metode getData
+        listItemMovie.className = "list-group-item list-group-item-primary";
+        listItemMovie.textContent = movie.getData();
+    
+        //Dodajemo u orderlistu napravljen listitem
+        orderListMovie.appendChild(listItemMovie);
+    
+        //Pravljenje dropdowna za kreirane filmove
+        var dropMovieSelect = document.getElementById('moviedrop')
+        dropMovie = document.createElement('option');
+        dropMovie.textContent = movie.getData();
+        dropMovieSelect.appendChild(dropMovie);
+    
+        //Guramo filmove u globalni array
+        movieList.push(movie);
+        var indexDropMovie = movieList.length;
+        dropMovie.setAttribute('value', indexDropMovie)
     }
-    movie = createMovie()
 
-    //Pravimo list item i selektujemo listu
-    var listItemMovie = document.createElement('li');
-    var orderListMovie = document.getElementById('movielist');
-
-    //Dodajemo list itmeu text iz metode getData
-    listItemMovie.className = "list-group-item";
-    listItemMovie.textContent = movie.getData();
-
-    //Dodajemo u orderlistu napravljen listitem
-    orderListMovie.appendChild(listItemMovie);
-
-    //Pravljenje dropdowna za kreirane filmove
-    var dropMovieSelect = document.getElementById('moviedrop')
-    dropMovie = document.createElement('option');
-    dropMovie.textContent = movie.getData();
-    dropMovieSelect.appendChild(dropMovie);
-
-    //Guramo filmove u globalni array
-    movieList.push(movie);
-    var indexDropMovie = movieList.length;
-    dropMovie.setAttribute('value', indexDropMovie)
 
 
 
@@ -111,7 +117,9 @@ var dropProgram;
 var indexDropProgram
 var counter = 0;
 createeProgram.addEventListener('click', function (e) {
+     //Proveravamo da li imamo dva ista programa
      programDoubleCheck();
+     //Ako je ovo true prekini kod
     if (validation()) {
         return;
     }
@@ -121,7 +129,7 @@ createeProgram.addEventListener('click', function (e) {
     listProgram = document.createElement('li');
     var orderListProgram = document.getElementById('programlist');
 
-    listProgram.className = "list-group-item";
+    listProgram.className = "list-group-item list-group-item-primary";
     listProgram.id = counter;
     listProgram.textContent = program.getData();
 
@@ -141,6 +149,7 @@ createeProgram.addEventListener('click', function (e) {
     // Guramo program u globalni array i dajemo index
     programList.push(program);
     indexDropProgram = programList.length;
+    // Dodajemo vrednosti u drop listu da mozemo posle da selektujrmo.
     dropProgram.setAttribute('value', indexDropProgram)
 
 
@@ -150,47 +159,48 @@ createeProgram.addEventListener('click', function (e) {
 var addMovieToProgram = document.getElementById('addmovietoprogram');
 
 addMovieToProgram.addEventListener('click', function (e) {
-    //Uzimamo index i selektujemo program iz liste sa tim indexom
-    var programdropIndex = parseInt(document.getElementById('programdrop').value);
-    var selectedProgram = programList[programdropIndex - 1];
 
-    //Uzimamo index i selektujemo film iz liste sa tim indexom
-    var moviedropIndex = parseInt(document.getElementById('moviedrop').value);
-    var selectedMovie = movieList[moviedropIndex - 1];
-    //Dodajemo programu duration pojedinacno film duration
+    var programIndex = parseInt(document.getElementById('programdrop').value);
+    var selectedProgram = programList[programIndex-1];
+    console.log(selectedProgram);
+    
+    var movieIndex = parseInt(document.getElementById('moviedrop').value);
+    var selectedMovie = movieList[movieIndex-1];
+    console.log(selectedMovie);
+
+   
+
     selectedProgram.programDuration += selectedMovie.duration;
-    //Povecavamo broj filmova
     selectedProgram.listOfMovies++;
-
-    //Kreiramo novi element
-    var newNode = document.createElement("li");
-    //Kreiramo text izvlacimo iz programa getData 
-    var newNodeText = document.createTextNode(selectedProgram.getData());
-    newNode.appendChild(newNodeText);
-    //Dodeljuemo id novom nodu od programIndexa zato sto novi nod nece imati id
-    newNode.id = programdropIndex;
-    newNode.className = "list-group-item";
-    //Selektujemo listu
+    
+    //Selektujemo parent Node liste programa gde cemo staru opciju zameniti novom;
     var parentNode = document.getElementById('programlist');
-    console.log(parentNode);
+    //Kreiramo novi Node
+    var newNode = document.createElement('li');
+    //Uzimamo text iz programa getData
+    var newNodeText  =document.createTextNode(program.getData());
+    //Ubacujemo text u elemnet
+    newNode.appendChild(newNodeText);
+    //Posto novi element  nema value dodajemo mu vrednost za id programIndexa koji je po redu 
+    newNode.id = programIndex;
+    //Samo bootstrap da bi bio lepsi
+    newNode.className = "list-group-item list-group-item-danger";
+   
+    
+    //Uzimamo postojeci programIndex i pretvaramo ga u string on ce biti id stari koji cemo zameniti
+    var nodeIndex = programIndex +'';
+    //Selektujemo stari node koji ima id koji je jednak postojecem programIndexu
+    var oldNode = document.getElementById(nodeIndex)
 
-    var nodeIndex = programdropIndex + "";
-    console.log(nodeIndex);
-    //Stara lista sa idejem koji je jednak programdropIndex;
-    var oldNode = document.getElementById(nodeIndex);
-    console.log(oldNode);
-    //Zameni staru node,novim
+     //Zameni staru node,novim
     parentNode.replaceChild(newNode, oldNode);
-
-    //   console.log(selectedMovie,moviedropIndex);
-    //   console.log(selectedProgram,programdropIndex);
-
-
 })
 
+
+//VALIDATION
 var validation = function (e) {
     var inputs = document.querySelectorAll('input');
-    //Prolazimo kroz sve zahtevane inpute i trazimo 
+    //Prolazimo kroz sve zahtevane inpute 
     for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].hasAttribute('required') && !inputs[i].value) {
            
@@ -198,7 +208,6 @@ var validation = function (e) {
 
         }
     }
-   
     return false;
 
 }
