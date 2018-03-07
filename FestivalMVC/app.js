@@ -3,7 +3,7 @@ var modelModul = (function () {
     /////////////////////////////CREATE MOVIE///////////////////////////////
     data = {
         listOfMovies: [],
-        listOfProgrmas: []
+        listOfProgrmas:[]
     }
     //Konstruktor Movie
     function Movie(title, length, genre) {
@@ -17,7 +17,10 @@ var modelModul = (function () {
     //Preosledujemo objekat iz kontrolera i vadimo pojedinacne proprety
     function movieCreateAdd(formMovie) {
         var movie = new Movie(formMovie.title, formMovie.length, formMovie.genre);
+
         data.listOfMovies.push(movie);
+        console.log(data.listOfMovies);
+        
         return movie;
     }
 
@@ -49,15 +52,19 @@ var modelModul = (function () {
         parent.appendChild(element);
     }
     /////////////////////////////CREATE PROGRAM///////////////////////////////
-    function Program(date) {
+    function Program(date1) {
         this.programDuration = 0;
-        this.date = new Date(date);
+        this.date =date1;
         this.listOfMovies = 0;
     }
 
-    function programCreateAdd() {
-        var program = new Program()
-        data.listOfPrograms.push(program)
+    function programCreateAdd(date1) {
+        var program = new Program(date1);
+        console.log(program);
+        // console.log(data.listOfPrograms);
+        
+        data.listOfProgrmas.push(program)
+        return program;
     }
 
     //Item je Program,html je koji node hoces da apendujes,kome hoces.
@@ -84,31 +91,41 @@ var modelModul = (function () {
     ////////////////////////ADD MOVIE TO PROGRAM /////////////////////////////
 
 
-     function xxx(program) {
+     function addMovieToProgram() {
+         var dropDownProgram = document.querySelector('.program-select');
+        var indexArrofProgram = parseInt(dropDownProgram.getAttribute('value')+1);
+    
+        console.log(indexArrofProgram);
+         console.log(data.listOfProgrmas);
+         console.log(data.listOfPrograms[1]);
+         
+         data.listOfPrograms[indexArrofProgram]
 
-        
-        var movieList = data.listOfMovies.length;
+
+        // var movieList = data.listOfMovies.length;
 
        
-        var outputStr = ''
-        outputStr = "number of Movies: " + movieList + program.getProgramLength();
+        // var outputStr = ''
+        // outputStr = "number of Movies: " + movieList + program.getProgramLength();
         
-        for (var i = 0; i < data.listOfMovies.length; i++) {
-            var singleMovie = data.listOfMovies[i];
-            outputStr += "\t\t" + singleMovie.showMovieData() + "\n";
-        }
-        return outputStr;
+        // for (var i = 0; i < data.listOfMovies.length; i++) {
+        //     var singleMovie = data.listOfMovies[i];
+        //     outputStr += "\t\t" + singleMovie.showMovieData() + "\n";
+        // }
+        // return outputStr;
     };
 
 
     //////////////////Ovo je vidljivo u Controleru//////////////
     return {
         movieCreateAdd: movieCreateAdd,
+        programCreateAdd:programCreateAdd,
         movieLength: movieLength,
         appendItem: appendItem,
         appendItemLength: appendItemLength,
         appendItemMovie: appendItemMovie,
-        xxx: xxx
+        addMovieToProgram:addMovieToProgram
+        
     }
 })()
 
@@ -142,8 +159,11 @@ var viewModul = (function () {
     function getFullDate() {
         var dateElement = document.querySelector('.program-date');
         var date = new Date(dateElement.value);
-        return date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
+         var fullDate = date.getDate() + "." + date.getMonth() + "." + date.getFullYear();
+         return fullDate;
     }
+
+
 
     //////////////////Ovo je vidljivo u Controleru//////////////
     return {
@@ -198,10 +218,16 @@ var controlerModul = (function (viewModulToControler, modelModulToControler) {
 
     btnCreateProgram.addEventListener('click', function () {
 
-        var createProgram = viewModulToControler;
+        var createProgramDOM = viewModulToControler
+        var date = viewModulToControler.getFullDate()
+        // console.log(date);
+        
+        var createProgram = modelModulToControler.programCreateAdd(date);
+        // console.log(createProgram);
+        
         //Pozivamo metodu iz modela i i praviom paragraf i option istom funkcijom
-        var displayProgramList = modelModul.appendItem(createProgram, 'p', showProgramList)
-        var displaydropDownProgramList = modelModul.appendItem(createProgram, 'option', dropDownProgramList)
+        var displayProgramList = modelModul.appendItem(createProgramDOM, 'p', showProgramList)
+        var displaydropDownProgramList = modelModul.appendItem(createProgramDOM, 'option', dropDownProgramList)
 
 
     })
@@ -213,9 +239,8 @@ var controlerModul = (function (viewModulToControler, modelModulToControler) {
 
     btnAddMovieToProgram.addEventListener('click', function () {
 
-        var addMovie = modelModulToControler.xxx();
-        console.log(addMovie);
-
+        modelModulToControler.addMovieToProgram()
+ 
 
     })
 
