@@ -1,13 +1,8 @@
 const dataModule = (() => {
 
-   
-
-
-
-
     const apiShowMovie = {
         baseUrl: `http://api.tvmaze.com/shows`,
-        singleUrl: ` http://api.tvmaze.com/shows/`
+
     }
 
     class Show {
@@ -19,19 +14,48 @@ const dataModule = (() => {
         }
 
     }
+    class SelectedShow {
+        constructor( name, img,summary) {
+            this.name = name;
+            this.summary = summary;
+            this.img = img;
+        }
+    }
+
+    class SearchInfo {
+        constructor(name, id) {
+            this.name = name;
+            this.id = id;
+        }
+    }
     const makeShows = (response) => {
         return response.map((oneShow) => {
             const { id, image, name, rating } = oneShow;
             const show = new Show(id, image.medium, name, rating.average);
             return show
         })
-
     }
+
+    const makeSingleShow = ( name, image, summary) => {
+        return  new SelectedShow( name, image, summary);
+       
+    }
+    const makeSearchInfo = (search) => {
+
+        let searchList = [];
+        search.forEach((element) => {
+            searchList.push(new SearchInfo(element.show.id, element.show.name));
+        })
+        return searchList;
+    }
+
 
     return {
         apiShowMovie,
         makeShows,
-       
+        makeSingleShow,
+        makeSearchInfo
+
     }
 
 })()

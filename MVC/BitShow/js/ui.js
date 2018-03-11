@@ -1,15 +1,35 @@
-const uiModule = (($)=>{
+const uiModule = (($) => {
     const $data = $('.data');
-
-    const displayShows = (newListOfShows) =>{
-        newListOfShows.forEach(showSingle =>{
+    //Show Main page
+    const displayShows = (newListOfShows) => {//CTRL
+        $data.children().remove()
+        newListOfShows.forEach(showSingle => {
             const $showSingle = createShow(showSingle);
             $data.append($showSingle)
+
         })
     }
+    //Show single page
+    const displaySingleShows = (makeSingleShowJson) => {//CTRL
+        const $showSingle = createSingleShow(makeSingleShowJson);
+        $data.children().remove()
+        $data.append($showSingle)
 
-    const createShow = (showSingle) =>{
-        const{id,image,name} = showSingle;
+
+    }
+    //Show search
+    const displaySearchShows = () =>{//CTRL   
+       $search = $('.search');
+       const li = createSearch();
+       $search.append(li);  
+    }
+    //Create main
+    const createShow = (showSingle) => {
+        const {
+            id,
+            image,
+            name
+        } = showSingle;
 
         return $(
             `<div class="col-4">
@@ -21,26 +41,58 @@ const uiModule = (($)=>{
                     </p>
                 </div>
             </div>
-        </div>`       
+        </div>`
         )
     }
+    //Create single page
+    const createSingleShow = () => {
+        makeSingleShow = localStorage.getItem("selectedShow");
+        const makeSingleShowJson = JSON.parse(makeSingleShow);
+       
+        return $(
+            `<div class="col-8 offset-2">
+            <div class="card" >
+                <img class="card-img-top" src="${makeSingleShowJson.img}" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text text-center">
+                       <h1>${makeSingleShowJson.name}</h1>
+                       <p>${makeSingleShowJson.summary}</p>
+                </div>
+                <button class="btn btn-primary" onclick="ctrlModule.init()">Back to List</button>
+            </div>
+        </div>`
+        )
 
-   
-
-
-    // const searchByInput = () => {
-                
-    //             let searchInput = $('input').val();
-              
-              
-    //             return `http://api.tvmaze.com/search/shows?q=${searchInput}`;
-    //         };
-
-    return{
-        displayShows
-        // searchByInput
     }
     
+    const searchByInput = () => {//CTRL  
+        let searchInput = $('input').val();
+        return `http://api.tvmaze.com/search/shows?q=${searchInput}`;
+
+    };
+
+       //Create search
+    const createSearch = () =>{
+        makeSearchInfo= localStorage.getItem("searchShow");
+        const makeSearchInfoJson = JSON.parse(makeSearchInfo);
+       
+            let $ul = "";
+            const ul = $('.show');
+            ul.children().remove();
+            makeSearchInfoJson.forEach((element) => {
+                ul.append(`<li id="${element.name}">${element.id}</li>`);
+                $ul = ul;
+            })    
+            return $ul;
+ 
+    }
+        return {
+            displayShows,
+            displaySingleShows,
+            searchByInput,
+            displaySearchShows
+        }
+
 })(jQuery)
 
 

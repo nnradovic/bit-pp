@@ -11,4 +11,16 @@ footer {
 .pagination {
   margin-top: 2rem; }
 
+ul{
+  color: black
+}
+li{
+  background: lightgray;
+  border:1px solid gray;
+  border-collapse: collapse;
+  text-align: center;
+  list-style: none;
+  
+}
+
 /*# sourceMappingURL=style.css.map */

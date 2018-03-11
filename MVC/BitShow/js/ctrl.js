@@ -1,46 +1,75 @@
 const ctrlModule = ((data, ui) => {
-    //Start fetch Ajax when load Page
-
-
+    //MAIN PAGE
     const init = () => {
-        const { baseUrl } = data.apiShowMovie;
-
+        const {
+            baseUrl
+        } = data.apiShowMovie;
         fetchMovie(baseUrl)
     }
-
-    //AJAX fetch 
+    //AJAX fetch main page
     const fetchMovie = (inputUrl) => {
         $.get(inputUrl)
             .done(sucessGetData)
             .fail(errorGetData)
     }
-
     //Sucess
     const sucessGetData = (response) => {
+     
+        const newListOfShows = data.makeShows(response);//DATA
+        uiModule.displayShows(newListOfShows)//UI
 
-        const newListOfShows = data.makeShows(response);
-        console.log(newListOfShows);
-        uiModule.displayShows(newListOfShows)
+        //SEARCH
+        $(ui.searchByInput).on("keyup", () => {
+            if (ui.searchByInput().length > 3) {
+                //AJAX fetch for search
+                const fetchSearchMovie = (inputUrl) => {
+                    $.get(inputUrl)
+                        .done(sucessSingleGetData)
+                        .fail(errorGetData)
+                }
+                const sucessSingleGetData = (response) => {
+                    const makeSearchInfo = data.makeSearchInfo(response);//DATA
+                    console.log(makeSearchInfo.searchList);
+                    
+                    const makeSearchInfoJson = JSON.stringify(makeSearchInfo);
+                    localStorage.setItem("searchShow", makeSearchInfoJson);
+                    ui.displaySearchShows()//UI
+                }
+                const search = ui.searchByInput()//UI
+                
+                //Start fetch Ajax after 3 input
+                fetchSearchMovie(search)
+            }
+        })
 
 
-        // $(ui.searchByInput).on("keyup", () => {
-        //     console.log(1);
-
-
-        // })
-
-
+        //SINGLE PAGE
         const $showName = $('.title');
-
-        console.log($showName);
-
         $showName.on('click', (e) => {
             e.preventDefault()
             const $self = $(e.currentTarget).attr('data-id');
-            console.log($self);
+            const {baseUrl} = data.apiShowMovie;
 
+            const fetchsingleMovie = (inputUrl) => {
+                $.get(inputUrl)
+                    .done(sucessSingleGetData)
+                    .fail(errorGetData)
+            }
+            const sucessSingleGetData = (response) => {
+                const { name , image, summary } = response
+                const makeSingleShow = data.makeSingleShow(name, image.medium, summary);//DATA
+                const makeSingleShowJson = JSON.stringify(makeSingleShow);
+                localStorage.setItem("selectedShow", makeSingleShowJson);
+                uiModule.displaySingleShows(makeSingleShow)//UI
+            }
+           
+                //If clicked on title start fetch for single page
+                fetchsingleMovie(` ${baseUrl}/${$self}`)
+           
         })
+
     }
+
     //Error
     const errorGetData = (error) => {
         console.log(error);
@@ -50,7 +79,8 @@ const ctrlModule = ((data, ui) => {
     //Exspose Init to outher world.
     return {
         init,
-        sucessGetData
+        sucessGetData,
+
 
 
 
